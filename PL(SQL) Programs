@@ -1,0 +1,315 @@
+#PL/SQL Programs
+SQL> set serveroutput on;
+
+SQL> Begin
+  2  dbms_output.put_line('Hello world');
+  3  end;
+  4  /
+Hello world
+
+PL/SQL procedure successfully completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SQL> declare
+  2  a char(25);
+  3  begin
+  4  a := 'hello';
+  5  dbms_output.put_line(a);
+  6  end;
+  7  /
+hello
+
+--> SUM OF TWO NUMBERS
+	SQL> declare
+	  2  x number(5);
+	  3  y number(5);
+	  4  z number(5);
+	  5  begin
+	  6  x := 10;
+	  7  y := 20;
+	  8  z := x+y;
+	  9  dbms_output.put_line('Sum is ' || z);
+	 10  end;
+	 11  /
+	Sum is 30
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Take value from user.
+	declare
+	x number;
+	y number;
+	z number;
+	begin
+	x := &x;
+	y := &y;
+	z := x+y;
+	dbms_output.put_line('Sum is ' || z);
+	end;
+	/
+
+	Enter value for x: 12
+	old   6: x := &x;
+	new   6: x := 12;
+	Enter value for y: 12
+	old   7: y := &y;
+	new   7: y := 12;
+	Sum is 24
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Sum of 3 number.
+	declare
+	x number;
+	y number;
+	z number;
+	s number;
+	begin
+	x := &x;
+	y := &y;
+	z := &z;
+	s := x + y + z;
+	dbms_output.put_line('Sum is ' ||s);
+	end;
+	/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Entered number is odd or Even.
+	declare
+	n number;
+	r number;
+	begin
+	n := &n;
+	r := MOD(n, 2);
+	if r = 0 then
+		dbms_output.put_line('Number is even');
+	else
+		dbms_output.put_line('Number is odd');
+	end if;
+	end;
+	/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Max from 3 numbers.
+	declare
+	n1 number;
+	n2 number;
+	n3 number;
+	begin
+	n1 := &n1;
+	n2 := &n2;
+	n3 := &n3;
+	if n1 > n2 then
+		if n1 > n3 then
+			dbms_output.put_line('Max = '||n1);
+		else
+			dbms_output.put_line('Max = '||n3);
+		end if;
+	else
+		if n2 > n3 then
+			dbms_output.put_line('Max = '||n2);
+		else
+			dbms_output.put_line('Max = '||n3);
+		end if;
+	end if;
+	end;
+	/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- MIN --
+declare
+n1 number(3);
+n2 number(3);
+n3 number(3);
+begin
+	n1:=&n1;
+	n2:=&n2;
+	n3:=&n3;
+	if(n1<n2 and n1<n3) then
+		dbms_output.put_line(n1||' Is MIN');
+	Elsif(n2<n3) then
+		dbms_output.put_line(n2||' Is MIN');
+	ELSE 
+		dbms_output.put_line(n3||' Is MIN');
+	end if;
+end;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Swap two numbers.
+	declare
+	n1 number;
+	n2 number;
+	t number;
+	begin
+	n1 := &n1;
+	n2 := &n2;
+	t := n1;
+	n1 := n2;
+	n2 := t;
+	dbms_output.put_line('n1 = '||n1||'n2 = '||n2);
+	end;
+	/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Insert Record into table(Auto)
+	declare
+	no number(5);
+	name varchar(20);
+	begin
+	insert into st(sno, sname) values (1, 'abc') returning sno into no;
+	dbms_output.put_line('Data inserted');
+	end;
+	/
+
+--> Insert Record into table(Enter Values From User)
+	declare
+	no number(5);
+	name varchar(20);
+	begin
+	no := &no;
+	name := '&name';
+	insert into st(sno, sname) values (no, name) returning sno into no;
+	dbms_output.put_line('Data inserted');
+	end;
+	/
+
+--> Delete Record from table
+	declare
+	no number(5);
+	begin
+	no := &no;
+	delete from st where sno = no;
+	dbms_output.put_line('Data deleted '|| no);
+	end;
+	/
+
+--> Create table
+	declare
+	begin
+	execute immediate 'create table student(sno number(5), sname varchar(15))';
+	dbms_output.put_line('Table Created Successfully...');
+	end;
+	/
+
+--> Create View
+	
+
+--> Count male and female from the table stu.
+declare
+m number(5);
+f number(5);
+begin
+select count(*) into m from stu where gender='m';
+dbms_output.put_line('Male = ' || m);
+select count(*) into f from stu where gender='f';
+dbms_output.put_line('Female = ' || f);
+end;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Bill
+declare
+items number(5);
+item varchar(20);
+qty number(5);
+price number(5);
+total number(5);
+gtotal number(10);
+begin
+items := &items;
+dbms_output.put_line('============================================');
+dbms_output.put_line('===============Shopping Bill ===============');
+dbms_output.put_line('============================================');
+dbms_output.put_line('Item         QTY         PRICE         TOTAL');
+for i in 1..items loop
+item := '&item';
+qty := &qty;
+price := &price;
+total := qty * price;
+gtotal := gtotal + total;
+dbms_output.put_line(item || '         ' || qyt || '         ' || price || '         ' || total);
+end loop;
+end;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- Prime number --
+declare
+n number(10);
+flag varchar(15);
+res number(10);
+begin
+n := &n;
+flag := 1;
+for i in 2..n-1 loop
+	res := n/i;
+	if res = 0 then
+		flag := 1;
+	end if;
+end loop;
+if flag = 1 then
+	dbms_output.put_line('Prime number');
+else
+	dbms_output.put_line('Not prime number');
+end if;
+end;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- factorial --
+set serveroutput on
+declare 
+	n1 number(3);
+	i number(2):=1;
+	fac number(5):=1;
+begin
+	n1:=&n1;
+	for i in 1..n1
+	loop
+		fac:=i*fac;
+	end loop;
+	dbms_output.put_line('Factorial Of  '||n1||' is '||fac);
+end;
+/	
+	
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- AVG --
+declare
+n1 number(3);
+n2 number(3);
+n3 number(3);
+sm number(3):=0;
+begin
+	n1:=&n1;
+	n2:=&n2;
+	n3:=&n3;
+	sm:=(n1+n2+n3)/3;
+	dbms_output.put_line('Average of : '||n1||' & '||n2||' & '||n3||' is : '||sm);
+end;
+/	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
