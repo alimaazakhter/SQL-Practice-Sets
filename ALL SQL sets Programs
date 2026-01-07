@@ -1,0 +1,855 @@
+# Sets Solutions all 1 to 7 
+
+Set 1 : Department :-
+
+mysql> create table Department (dept_no INT PRIMARY KEY, dept_name varchar(10), location varchar(10));
+
+mysql> desc Department;
+
+mysql> SHOW TABLES;
+
+mysql> insert into Department VALUES
+    -> (10, 'Account', 'NY'),
+    -> (20, 'HR', 'NY'),
+    -> (30, 'Production', 'DL'),
+    -> (40, 'Sales', 'NY'),
+    -> (50, 'EDP', 'MU'),
+    -> (60, 'TRG', ''),
+    -> (110, 'RND', 'AH');
+Query OK, 7 rows affected (0.01 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * FROM Department;
+
+mysql> select * from Department where location = 'NY';
+
+mysql> SELECT * FROM Department where dept_no = 10;
+
+mysql> select * from Department where dept_name LIKE 'A%';
+
+mysql> select * from Department where dept_no BETWEEN 1 AND 100;
+
+mysql> DELETE FROM Department where dept_name = 'TRG';
+Query OK, 1 row affected (0.00 sec)
+
+mysql> UPDATE Department SET dept_name='Sales' where dept_name='IT';
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 0  Changed: 0  Warnings: 0
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Set 2: Employee and Department :- 
+
+CREATE TABLE Employee (
+    emp_id INT PRIMARY KEY,
+    emp_name VARCHAR(30),
+    birth_date DATE,
+    gender VARCHAR(6),
+    dept_no INT,
+    address VARCHAR(50),
+    designation VARCHAR(20),
+    salary INT CHECK (salary > 0),
+    experience INT,
+    email VARCHAR(40),
+    CONSTRAINT chk_age CHECK (birth_date <= DATE_SUB(CURDATE(), INTERVAL 18 YEAR)),
+    CONSTRAINT chk_designation CHECK (designation IN
+    ('manager','clerk','leader','analyst','designer','coder','tester'))
+);
+
+
+Q2 & Q3: Create DEPARTMENT table with constraints
+CREATE TABLE Department (
+    dept_no INT PRIMARY KEY,
+    dept_name VARCHAR(30) UNIQUE,
+    location VARCHAR(30)
+);
+
+🔹 Q4: Add constraints (Foreign Key + Gender check)
+ALTER TABLE Employee
+ADD CONSTRAINT fk_dept
+FOREIGN KEY (dept_no) REFERENCES Department(dept_no);
+
+ALTER TABLE Employee
+ADD CONSTRAINT chk_gender
+CHECK (gender IN ('Male','Female'));
+
+🔹 Q5: Display structure of tables
+DESC Employee;
+DESC Department;
+
+🔹 Q6: Insert proper data (sample – minimum 5 records)
+INSERT INTO Department VALUES
+(10,'HR','Ahmedabad'),
+(20,'IT','Mumbai'),
+(30,'Sales','Delhi'),
+(40,'Finance','Pune');
+
+insert into employeees values (&emp_id, '&emp_name', TO_DATE('&birth_date','YYYY-MM-DD'), '&gender', &dept_id, '&address', '&designation', &salary, &experience, '&email');
+
+INSERT INTO Employee VALUES
+(1,'Amit','1998-05-10','Male',20,'Mumbai','coder',6000,3,'amit@gmail.com'),
+(2,'Neha','1997-03-12','Female',10,'Ahmedabad','manager',9000,6,'neha@gmail.com'),
+(3,'Rahul','2000-02-20','Male',20,'Mumbai','tester',4000,1,'rahul@gmail.com'),
+(4,'Anita','1996-08-25','Female',30,'Delhi','analyst',7000,5,'anita@gmail.com'),
+(5,'Arjun','1995-11-11','Male',40,'Pune','leader',8000,8,'arjun@gmail.com');
+
+🔹 Q7: List all records of each table (ascending order)
+SELECT * FROM Employee ORDER BY emp_id ASC;
+SELECT * FROM Department ORDER BY dept_no ASC;
+
+🔹 Q8: Delete department whose location is Ahmedabad
+DELETE FROM Employeees
+WHERE dept_no = (
+   SELECT dept_no FROM Department WHERE location = 'Ahmedabad'
+);
+
+DELETE FROM Department
+WHERE location = 'Ahmedabad';
+
+🔹 Q9: Display Female employee list
+SELECT * FROM Employee
+WHERE gender = 'Female';
+
+🔹 Q10: Display department-wise employee names
+SELECT d.dept_name, e.emp_name
+FROM Employee e
+JOIN Department d
+ON e.dept_no = d.dept_no;
+
+🔹 Q11: Salary less than 5000 and greater than 2000
+SELECT emp_name
+FROM Employee
+WHERE salary < 5000 AND salary > 2000;
+
+🔹 Q12: Female employees with designation (descending)
+SELECT emp_name, designation
+FROM Employee
+WHERE gender = 'Female'
+ORDER BY designation DESC;
+
+🔹 Q13: Employee names starting with ‘A’
+SELECT emp_name
+FROM Employee
+WHERE emp_name LIKE 'A%';
+
+🔹 Q14: Employee with minimum salary
+SELECT emp_name, salary
+FROM Employee
+WHERE salary = (SELECT MIN(salary) FROM Employee);
+
+🔹 Q15: 10% salary hike for IT department
+UPDATE Employee
+SET salary = salary + (salary * 0.10)
+WHERE dept_no = (
+    SELECT dept_no FROM Department WHERE dept_name = 'IT'
+);
+
+🔹 Q16: Count total employees of IT department
+SELECT COUNT(*)
+FROM Employee
+WHERE dept_no = (
+    SELECT dept_no FROM Department WHERE dept_name = 'IT'
+);
+
+🔹 Q17: Employees born in current month
+SELECT *
+FROM Employee
+WHERE MONTH(birth_date) = MONTH(CURDATE());
+
+🔹 Q18: Print combined sentence
+SELECT CONCAT(emp_name,' works in department MBA')
+FROM Employee;
+
+🔹 Q19: Freshers (experience < 1 year)
+SELECT emp_name
+FROM Employee
+WHERE experience < 1;
+
+🔹 Q20: Dept-wise employees with >5 years experience
+SELECT d.dept_name, e.emp_name
+FROM Employee e
+JOIN Department d
+ON e.dept_no = d.dept_no
+WHERE experience > 5;
+
+🔹 Q21: Create sequence (MySQL alternative using AUTO_INCREMENT)
+CREATE SEQUENCE dept_seq
+START WITH 10
+INCREMENT BY 1;
+
+🔹 Q22: Department having no employees
+SELECT dept_name FROM Department
+WHERE dept_no NOT IN (SELECT dept_no FROM Employee);
+
+
+INSERT INTO Employeees VALUES(102,'Anita',TO_DATE('1998-05-20','YYYY-MM-DD'),'female',2,'Pune','manager',7000,6,'anita@gmail.com');
+INSERT INTO Employeees VALUES(103,'Ravi',TO_DATE('1997-08-15','YYYY-MM-DD'),'male',3,'Ahmedabad','clerk',3000,3,'ravi@gmail.com');
+INSERT INTO Employeees VALUES(104,'Neha',TO_DATE('1995-11-25','YYYY-MM-DD'),'female',1,'Mumbai','analyst',8000,7,'neha@gmail.com');
+INSERT INTO Employeees VALUES(105,'Ajay',TO_DATE('2001-01-30','YYYY-MM-DD'),'male',4,'Delhi','tester',2500,1,'ajay@gmail.com');
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET 3: Student, Course, SC
+
+🔹 Q1: Create three tables with key constraints
+📘 STUDENT table
+CREATE TABLE Student (
+    rollno INT PRIMARY KEY,
+    name VARCHAR2(30),
+    class VARCHAR2(10),
+    birthdate DATE
+);
+
+COURSE table
+CREATE TABLE Course (
+    courseno INT PRIMARY KEY,
+    coursename VARCHAR2(40),
+    max_marks INT,
+    pass_marks INT
+);
+
+SC table (Student–Course)
+CREATE TABLE SC (
+    rollno INT,
+    courseno INT,
+    marks INT,
+    CONSTRAINT fk_roll FOREIGN KEY (rollno) REFERENCES Student(rollno),
+    CONSTRAINT fk_course FOREIGN KEY (courseno) REFERENCES Course(courseno)
+);
+
+
+Q2: Insert using substitution variables
+INSERT INTO Student VALUES (&rollno,'&name','&class',TO_DATE('&birthdate','YYYY-MM-DD'));
+INSERT INTO Course VALUES (&courseno,'&coursename',&max_marks,&pass_marks);
+INSERT INTO SC VALUES (&rollno,&courseno,&marks);
+
+🔹 Q3: Add constraint (marks strictly between 0 and 100)
+ALTER TABLE SC
+ADD CONSTRAINT chk_marks
+CHECK (marks > 0 AND marks < 100);
+
+🔹 Q4: Add composite primary key in SC table
+ALTER TABLE SC
+ADD CONSTRAINT pk_sc PRIMARY KEY (rollno, courseno);
+
+🔹 Q5: Student who takes “Database Management System”
+SELECT s.rollno, s.name
+FROM Student s
+JOIN SC sc ON s.rollno = sc.rollno
+JOIN Course c ON sc.courseno = c.courseno
+WHERE c.coursename = 'Database Management System';
+
+🔹 Q6: Students who scored >70% in Computer Networks and not failed
+SELECT s.name
+FROM Student s
+JOIN SC sc ON s.rollno = sc.rollno
+JOIN Course c ON sc.courseno = c.courseno
+WHERE c.coursename = 'Computer Networks'
+AND sc.marks > 0.7 * c.max_marks
+AND sc.marks >= c.pass_marks;
+
+🔹 Q7: Average marks obtained by each student
+SELECT s.rollno, s.name, AVG(sc.marks) AS average_marks
+FROM Student s
+JOIN SC sc ON s.rollno = sc.rollno
+GROUP BY s.rollno, s.name;
+
+🔹 Q8: Courses where pass marks > 30% of max marks
+SELECT coursename
+FROM Course
+WHERE pass_marks > 0.3 * max_marks;
+
+🔹 Q9: Students born in 1980 or 1982
+SELECT *
+FROM Student
+WHERE EXTRACT(YEAR FROM birthdate) IN (1980, 1982);
+
+🔹 Q10: Create a VIEW (VERY IMPORTANT 🔥)
+👉 View showing rollno, courseno and marks
+CREATE VIEW student_course_marks AS
+SELECT rollno, courseno, marks
+FROM SC;
+
+▶️ View use
+SELECT * FROM student_course_marks;
+
+INSERT INTO Student VALUES (1,'Amit','TY','1998-05-10');
+INSERT INTO Student VALUES (2,'Neha','TY','1980-03-12');
+INSERT INTO Student VALUES (3,'Rahul','SY','1982-07-20');
+INSERT INTO Student VALUES (4,'Anita','SY','1999-11-25');
+
+INSERT INTO Course VALUES (101,'Database Management System',100,40);
+INSERT INTO Course VALUES (102,'Computer Networks',100,35);
+INSERT INTO Course VALUES (103,'Operating System',100,40);
+
+INSERT INTO SC VALUES (1,101,78);
+INSERT INTO SC VALUES (1,102,72);
+INSERT INTO SC VALUES (2,101,65);
+INSERT INTO SC VALUES (3,102,80);
+INSERT INTO SC VALUES (4,103,55);
+INSERT INTO SC VALUES (2,103,90);
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET 4: Employee, Depart, Project
+
+🔹 STEP 2: CREATE TABLES with CONSTRAINTS
+🟢 DEPART table
+CREATE TABLE Depart (
+  dept_no NUMBER PRIMARY KEY,
+  dept_name VARCHAR2(20) UNIQUE NOT NULL,
+  total_employees NUMBER CHECK (total_employees >= 0),
+  location VARCHAR2(20)
+);
+
+🟢 EMPLOYEE table
+CREATE TABLE Employee (
+  emp_id NUMBER PRIMARY KEY,
+  emp_name VARCHAR2(20) NOT NULL,
+  birth_date DATE,
+  gender VARCHAR2(10) CHECK (gender IN ('MALE','FEMALE')),
+  dept_no NUMBER,
+  address VARCHAR2(50),
+  designation VARCHAR2(20),
+  salary NUMBER CHECK (salary > 0),
+  experience NUMBER CHECK (experience >= 0),
+  email VARCHAR2(30) UNIQUE,
+  CONSTRAINT fk_emp_dept FOREIGN KEY (dept_no)
+  REFERENCES Depart(dept_no)
+);
+
+🟢 PROJECT table
+CREATE TABLE Project (
+  proj_id NUMBER PRIMARY KEY,
+  type_of_project VARCHAR2(20),
+  status VARCHAR2(20),
+  start_date DATE,
+  emp_id NUMBER,
+  CONSTRAINT fk_proj_emp FOREIGN KEY (emp_id)
+  REFERENCES Employee(emp_id)
+);
+
+🔹 STEP 3: INSERT DATA (at least 5 records)
+📌 DEPART
+INSERT INTO Depart VALUES (1,'CIVIL',5,'Ahmedabad');
+INSERT INTO Depart VALUES (2,'MCA',3,'Surat');
+INSERT INTO Depart VALUES (3,'CE',2,'Vadodara');
+INSERT INTO Depart VALUES (4,'MECH',0,'Rajkot');
+INSERT INTO Depart VALUES (5,'IT',4,'Mumbai');
+
+📌 EMPLOYEE
+INSERT INTO Employee VALUES (101,'AALIA',DATE '2000-05-10','FEMALE',1,'AHD','ENGINEER',30000,3,'aalia@gmail.com');
+INSERT INTO Employee VALUES (102,'AMIT',DATE '1999-03-15','MALE',2,'SURAT','PROGRAMMER',25000,2,'amit@gmail.com');
+INSERT INTO Employee VALUES (103,'RINA',DATE '2001-09-20','FEMALE',3,'VAD','TESTER',20000,1,'rina@gmail.com');
+INSERT INTO Employee VALUES (104,'AJAY',DATE '1998-01-25','MALE',1,'AHD','MANAGER',50000,6,'ajay@gmail.com');
+INSERT INTO Employee VALUES (105,'ANITA',DATE '2002-07-12','FEMALE',2,'SURAT','CLERK',18000,0,'anita@gmail.com');
+
+📌 PROJECT
+INSERT INTO Project VALUES (1,'WEB','COMPLETED',SYSDATE-10,101);
+INSERT INTO Project VALUES (2,'APP','PENDING',SYSDATE,102);
+INSERT INTO Project VALUES (3,'DB','RUNNING',SYSDATE,103);
+INSERT INTO Project VALUES (4,'AI','COMPLETED',SYSDATE-5,104);
+INSERT INTO Project VALUES (5,'ML','PENDING',SYSDATE+2,105);
+
+✅ 1. Delete department whose total employees < 1
+DELETE FROM Depart WHERE total_employees < 1;
+
+✅ 2. Female employee name & designation (descending)
+SELECT emp_name, designation
+FROM Employee
+WHERE gender = 'FEMALE'
+ORDER BY emp_name DESC;
+
+✅ 3. Names start with ‘A’ and end with ‘A’
+SELECT emp_name
+FROM Employee
+WHERE emp_name LIKE 'A%A';
+
+✅ 4. Employee with minimum salary
+SELECT emp_name, salary
+FROM Employee
+WHERE salary = (SELECT MIN(salary) FROM Employee);
+
+✅ 5. Add 10% salary for CIVIL department
+UPDATE Employee
+SET salary = salary * 1.10
+WHERE dept_no = (
+  SELECT dept_no FROM Depart WHERE dept_name = 'CIVIL'
+);
+
+✅ 6. Count employees of MCA department
+SELECT COUNT(*)
+FROM Employee
+WHERE dept_no = (
+  SELECT dept_no FROM Depart WHERE dept_name = 'MCA'
+);
+
+✅ 7. Employees born in current month
+SELECT emp_name
+FROM Employee
+WHERE TO_CHAR(birth_date,'MM') = TO_CHAR(SYSDATE,'MM');
+
+✅ 8. Employee works in department ‘CE’
+SELECT e.emp_name, d.dept_name
+FROM Employee e JOIN Depart d
+ON e.dept_no = d.dept_no
+WHERE d.dept_name = 'CE';
+
+✅ 9. Fresher employees (< 1 year experience)
+SELECT emp_name
+FROM Employee
+WHERE experience < 1;
+
+✅ 10. Department-wise employees (>5 years experience)
+SELECT d.dept_name, e.emp_name
+FROM Employee e JOIN Depart d
+ON e.dept_no = d.dept_no
+WHERE e.experience > 5;
+
+🔥 FUNCTION (Q11)
+✅ Total projects based on status
+CREATE OR REPLACE FUNCTION count_projects(p_status VARCHAR2)
+RETURN NUMBER
+IS total NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO total
+  FROM Project
+  WHERE status = p_status;
+  RETURN total;
+END;
+/
+
+
+📌 Call:
+
+SELECT count_projects('PENDING') FROM dual;
+
+🔥 PROCEDURE (Q12)
+✅ Projects starting today
+CREATE OR REPLACE PROCEDURE today_projects
+IS
+BEGIN
+  SELECT proj_id, type_of_project
+  FROM Project
+  WHERE start_date = TRUNC(SYSDATE);
+END;
+/
+
+📌 Call:
+
+EXEC today_projects;
+
+
+🔥 TRIGGER (Q13)
+CREATE OR REPLACE TRIGGER trg_project_pending
+BEFORE INSERT OR UPDATE OR DELETE ON Project
+FOR EACH ROW
+BEGIN
+  IF :OLD.status = 'PENDING' THEN
+    RAISE_APPLICATION_ERROR(-20001,'Operation not allowed on pending project');
+  END IF;
+END;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET 5 : Hostel, Room, Charges, Student, Fees
+
+CREATE USER stud IDENTIFIED BY stud;
+GRANT CONNECT, RESOURCE TO stud;
+CONNECT stud/stud;
+
+1️⃣ CREATE TABLES
+HOSTEL
+CREATE TABLE Hostel(
+    hno NUMBER PRIMARY KEY,
+    hname VARCHAR2(30) NOT NULL,
+    haddr VARCHAR2(50),
+    total_capacity NUMBER CHECK(total_capacity > 0),
+    warden VARCHAR2(30)
+);
+
+ROOM
+CREATE TABLE Room(
+    hno NUMBER,
+    rno NUMBER,
+    rtype VARCHAR2(10) CHECK(rtype IN ('Single','Double')),
+    location VARCHAR2(30),
+    no_of_students NUMBER CHECK(no_of_students>=0),
+    status VARCHAR2(10) CHECK(status IN ('Occupied','Vacant')),
+    CONSTRAINT pk_room PRIMARY KEY(hno,rno),
+    CONSTRAINT fk_room FOREIGN KEY(hno) REFERENCES Hostel(hno)
+);
+
+CHARGES
+CREATE TABLE Charges(
+    hno NUMBER,
+    rtype VARCHAR2(10),
+    charges NUMBER CHECK(charges>0),
+    CONSTRAINT pk_charges PRIMARY KEY(hno,rtype),
+    CONSTRAINT fk_chg FOREIGN KEY(hno) REFERENCES Hostel(hno)
+);
+
+STUDENT
+CREATE TABLE Student(
+    sid NUMBER PRIMARY KEY,
+    sname VARCHAR2(30),
+    mobile_no VARCHAR2(10) UNIQUE,
+    gender VARCHAR2(10) CHECK(gender IN ('Male','Female')),
+    faculty VARCHAR2(20),
+    dept VARCHAR2(20),
+    class VARCHAR2(10),
+    hno NUMBER,
+    rno NUMBER,
+    CONSTRAINT fk_std_room FOREIGN KEY(hno,rno) REFERENCES Room(hno,rno)
+);
+
+FEES
+CREATE TABLE Fees(
+    sid NUMBER,
+    fdate DATE,
+    famount NUMBER,
+    CONSTRAINT fk_fees FOREIGN KEY(sid) REFERENCES Student(sid)
+);
+
+2️⃣ INSERT SAMPLE RECORDS
+INSERT INTO Hostel VALUES(1,'Chanakya','Delhi',300,'Mr. Sharma');
+INSERT INTO Hostel VALUES(2,'Vivekanand','Mumbai',250,'Mr. Patil');
+
+INSERT INTO Room VALUES(1,101,'Single','1st',1,'Occupied');
+INSERT INTO Room VALUES(1,102,'Double','1st',2,'Vacant');
+INSERT INTO Room VALUES(2,201,'Single','2nd',0,'Vacant');
+INSERT INTO Room VALUES(2,202,'Double','2nd',2,'Occupied');
+
+INSERT INTO Student VALUES(1,'Aman','9999999999','Male','Science','CS','FY',1,101);
+INSERT INTO Student VALUES(2,'Neha','8888888888','Female','Science','CS','SY',2,202);
+
+INSERT INTO Fees VALUES(1,TO_DATE('15-11-2017','DD-MM-YYYY'),20000);
+
+🔍 QUERIES
+1️⃣ Total vacant rooms
+SELECT COUNT(*) FROM Room WHERE status='Vacant';
+
+3️⃣ Hostels having single seated rooms
+SELECT DISTINCT h.hname
+FROM Hostel h, Room r
+WHERE h.hno=r.hno AND r.rtype='Single';
+
+4️⃣ Warden & address of CS students
+SELECT h.warden,h.haddr
+FROM Hostel h, Student s
+WHERE h.hno=s.hno AND s.dept='CS';
+
+7️⃣ Hostels fully occupied
+SELECT hname FROM Hostel
+WHERE total_capacity = (SELECT COUNT(*) FROM Student WHERE Student.hno=Hostel.hno);
+
+⚡ TRIGGER – mobile length 10 only
+CREATE OR REPLACE TRIGGER chk_mobile
+BEFORE INSERT OR UPDATE ON Student
+FOR EACH ROW
+BEGIN
+  IF LENGTH(:NEW.mobile_no) < 10 THEN
+     RAISE_APPLICATION_ERROR(-20001,'Mobile must be 10 digits');
+  END IF;
+END;
+/
+
+⚙️ PL/SQL – Gender wise student count
+DECLARE
+    m NUMBER;
+    f NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO m FROM Student WHERE gender='Male';
+    SELECT COUNT(*) INTO f FROM Student WHERE gender='Female';
+
+    DBMS_OUTPUT.PUT_LINE('Male Students: '||m);
+    DBMS_OUTPUT.PUT_LINE('Female Students: '||f);
+END;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET 6: Hospital
+
+🔹 Create USER
+CREATE USER hospital IDENTIFIED BY hospital;
+GRANT CONNECT, RESOURCE TO hospital;
+CONNECT hospital/hospital;
+
+🔹 Create Tables
+DOCTOR
+CREATE TABLE Doctor(
+    dno NUMBER PRIMARY KEY,
+    dname VARCHAR2(30) NOT NULL,
+    specialization VARCHAR2(30),
+    clinic_addr VARCHAR2(50)
+);
+
+MEDICINE
+CREATE TABLE Medicine(
+    mno NUMBER PRIMARY KEY,
+    mname VARCHAR2(30),
+    type VARCHAR2(20),
+    content VARCHAR2(30),
+    manufacturer VARCHAR2(30)
+);
+
+DISEASE
+CREATE TABLE Disease(
+    disease_name VARCHAR2(30) PRIMARY KEY,
+    symptom1 VARCHAR2(30),
+    symptom2 VARCHAR2(30),
+    symptom3 VARCHAR2(30)
+);
+
+TREATMENT
+CREATE TABLE Treatment(
+    tno NUMBER PRIMARY KEY,
+    dno NUMBER,
+    disease_name VARCHAR2(30),
+    mno NUMBER,
+    dosage NUMBER CHECK(dosage > 0),
+    avg_cure_time NUMBER,
+    CONSTRAINT fk_treat_doc FOREIGN KEY(dno) REFERENCES Doctor(dno),
+    CONSTRAINT fk_treat_dis FOREIGN KEY(disease_name) REFERENCES Disease(disease_name),
+    CONSTRAINT fk_treat_med FOREIGN KEY(mno) REFERENCES Medicine(mno)
+);
+
+🔹 Insert Records
+INSERT INTO Doctor VALUES(1,'Dr.Shan','Cancer','Delhi');
+INSERT INTO Doctor VALUES(2,'Dr.Amit','Migraine','Mumbai');
+INSERT INTO Doctor VALUES(3,'Dr.Raj','General','Pune');
+
+INSERT INTO Medicine VALUES(1,'Penicillin','Antibiotic','PCN','Pfizer');
+INSERT INTO Medicine VALUES(2,'Crocin','Tablet','PCM','GSK');
+INSERT INTO Medicine VALUES(3,'Vicks','Syrup','Menthol','Vicks');
+
+INSERT INTO Disease VALUES('Cancer','Pain','Fatigue','WeightLoss');
+INSERT INTO Disease VALUES('Migraine','Headache','Nausea','BlurVision');
+INSERT INTO Disease VALUES('Polio','Weakness','Paralysis','Fever');
+INSERT INTO Disease VALUES('Depression','Sadness','Insomnia','Anxiety');
+
+INSERT INTO Treatment VALUES(1,1,'Cancer',1,500,10);
+INSERT INTO Treatment VALUES(2,2,'Migraine',2,650,5);
+INSERT INTO Treatment VALUES(3,3,'Polio',1,400,8);
+
+📌 QUERIES
+1️⃣ Display all tables ascending
+SELECT * FROM Doctor ORDER BY dname;
+SELECT * FROM Medicine ORDER BY mname;
+SELECT * FROM Disease ORDER BY disease_name;
+SELECT * FROM Treatment ORDER BY tno;
+
+2️⃣ Doctors who gave no treatment
+SELECT dname FROM Doctor
+WHERE dno NOT IN (SELECT dno FROM Treatment);
+
+3️⃣ Doctors who treat cancer
+SELECT dname FROM Doctor d, Treatment t
+WHERE d.dno=t.dno AND t.disease_name='Cancer';
+
+4️⃣ Remove Polio disease from Disease & Treatment
+DELETE FROM Treatment WHERE disease_name='Polio';
+DELETE FROM Disease WHERE disease_name='Polio';
+
+5️⃣ Doctors related to Dr.Shan
+SELECT * FROM Doctor WHERE clinic_addr='Delhi';
+
+6️⃣ Create Index
+CREATE INDEX idx_treat ON Treatment(dno,disease_name);
+
+7️⃣ Doctors who treat Migraine
+SELECT dname FROM Doctor d, Treatment t
+WHERE d.dno=t.dno AND t.disease_name='Migraine';
+
+8️⃣ Max dosage of Penicillin
+SELECT MAX(dosage) FROM Treatment t, Medicine m
+WHERE t.mno=m.mno AND m.mname='Penicillin';
+
+9️⃣ Total diseases treated by every doctor
+SELECT dname, COUNT(disease_name)
+FROM Doctor d, Treatment t
+WHERE d.dno=t.dno
+GROUP BY dname;
+
+🔟 Doctors having no treatment for depression
+SELECT dname FROM Doctor
+WHERE dno NOT IN (SELECT dno FROM Treatment WHERE disease_name='Depression');
+
+🔒 VIEW
+CREATE VIEW treat_view AS
+SELECT d.dname, t.disease_name, m.mname
+FROM Doctor d, Treatment t, Medicine m
+WHERE d.dno=t.dno AND t.mno=m.mno
+WITH READ ONLY;
+
+⚙️ PL/SQL REPORT
+DECLARE
+    total NUMBER;
+BEGIN
+    FOR i IN (SELECT mname FROM Medicine) LOOP
+        SELECT COUNT(*) INTO total FROM Treatment t, Medicine m
+        WHERE t.mno=m.mno AND m.mname=i.mname;
+
+        DBMS_OUTPUT.PUT_LINE(i.mname||' Total Medicines = '||total);
+    END LOOP;
+END;
+/
+
+🚫 TRIGGER
+CREATE OR REPLACE TRIGGER chk_avgtime
+BEFORE INSERT OR UPDATE ON Treatment
+FOR EACH ROW
+BEGIN
+   IF :NEW.avg_cure_time < 1 THEN
+      RAISE_APPLICATION_ERROR(-20001,'Avg cure time must be >=1');
+   END IF;
+END;
+/
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+SET 7: Customer, Item, Cust_Item 
+
+🔹 Create USER
+CREATE USER shopping IDENTIFIED BY shopping;
+GRANT CONNECT, RESOURCE TO shopping;
+CONNECT shopping/shopping;
+
+🔹 Create Tables
+CUSTOMER
+CREATE TABLE Customer(
+    cno NUMBER PRIMARY KEY,
+    cust_name VARCHAR2(30) NOT NULL,
+    cust_phone VARCHAR2(10) UNIQUE,
+    location VARCHAR2(20),
+    gender VARCHAR2(10) CHECK(gender IN ('Male','Female'))
+);
+
+ITEM
+CREATE TABLE Item(
+    itemno NUMBER PRIMARY KEY,
+    itemname VARCHAR2(30),
+    color VARCHAR2(15),
+    weight NUMBER CHECK(weight>0),
+    expire_date DATE,
+    price NUMBER CHECK(price>0),
+    shop_name VARCHAR2(30)
+);
+
+CUST_ITEM
+CREATE TABLE Cust_Item(
+    cno NUMBER,
+    itemno NUMBER,
+    quantity_purchased NUMBER CHECK(quantity_purchased>0),
+    date_purchase DATE,
+    CONSTRAINT pk_custitem PRIMARY KEY(cno,itemno),
+    CONSTRAINT fk_ci_cust FOREIGN KEY(cno) REFERENCES Customer(cno),
+    CONSTRAINT fk_ci_item FOREIGN KEY(itemno) REFERENCES Item(itemno)
+);
+
+🔹 Insert Sample Data
+INSERT INTO Customer VALUES(1,'Aman','9999999999','Mumbai','Male');
+INSERT INTO Customer VALUES(2,'Neha','8888888888','Pune','Female');
+INSERT INTO Customer VALUES(3,'Ravi','9991112222','Mumbai','Male');
+INSERT INTO Customer VALUES(4,'Pooja','9911223344','Delhi','Female');
+INSERT INTO Customer VALUES(5,'Rahul','9922334455','Pune','Male');
+
+INSERT INTO Item VALUES(10,'Pen','Black',10,ADD_MONTHS(SYSDATE,1),50,'Reliance');
+INSERT INTO Item VALUES(20,'Shirt','White',200,ADD_MONTHS(SYSDATE,2),1500,'Reliance');
+INSERT INTO Item VALUES(30,'Bag','Brown',500,ADD_MONTHS(SYSDATE,3),3000,'Pantaloons');
+INSERT INTO Item VALUES(40,'Watch','Black',100,ADD_MONTHS(SYSDATE,1),60000,'Titan');
+INSERT INTO Item VALUES(50,'Shoes','White',400,ADD_MONTHS(SYSDATE,4),4500,'Bata');
+
+INSERT INTO Cust_Item VALUES(1,10,5,SYSDATE);
+INSERT INTO Cust_Item VALUES(1,20,2,SYSDATE);
+INSERT INTO Cust_Item VALUES(2,40,1,SYSDATE);
+INSERT INTO Cust_Item VALUES(3,30,3,SYSDATE);
+INSERT INTO Cust_Item VALUES(4,50,1,SYSDATE);
+
+📌 QUERIES
+1️⃣ Delete items whose price >50000
+DELETE FROM Item WHERE price > 50000;
+
+2️⃣ Customers in same location
+SELECT cust_name FROM Customer
+WHERE location IN (
+    SELECT location FROM Customer GROUP BY location HAVING COUNT(*)>1
+);
+
+3️⃣ Items which are black, white, brown
+SELECT itemname FROM Item
+WHERE color IN ('Black','White','Brown');
+
+4️⃣ Item names between ‘p’ and ‘s’
+SELECT itemname FROM Item
+WHERE itemname BETWEEN 'P' AND 'S';
+
+5️⃣ Item with minimum weight
+SELECT itemname FROM Item
+WHERE weight = (SELECT MIN(weight) FROM Item);
+
+6️⃣ Add one month for itemno=40
+UPDATE Item
+SET expire_date = ADD_MONTHS(expire_date,1)
+WHERE itemno=40;
+
+7️⃣ Items expiring next month
+SELECT COUNT(*) FROM Item
+WHERE TO_CHAR(expire_date,'MM') = TO_CHAR(ADD_MONTHS(SYSDATE,1),'MM');
+
+8️⃣ Customers phone starting with 99
+SELECT cust_name FROM Customer
+WHERE cust_phone LIKE '99%';
+
+9️⃣ Total value (qty*price)
+SELECT c.cust_name, SUM(i.price * ci.quantity_purchased) AS total_price
+FROM Customer c, Item i, Cust_Item ci
+WHERE c.cno=ci.cno AND i.itemno=ci.itemno
+GROUP BY c.cust_name;
+
+🔟 Customer purchased max items
+SELECT cust_name FROM Customer
+WHERE cno = (
+    SELECT cno FROM Cust_Item
+    GROUP BY cno
+    HAVING SUM(quantity_purchased)=(
+        SELECT MAX(SUM(quantity_purchased)) FROM Cust_Item GROUP BY cno
+    )
+);
+
+1️⃣1️⃣ Total price itemwise
+SELECT itemname, SUM(i.price * ci.quantity_purchased)
+FROM Item i, Cust_Item ci
+WHERE i.itemno=ci.itemno
+GROUP BY itemname;
+
+1️⃣2️⃣ Item name, customer name & qty
+SELECT i.itemname, c.cust_name, ci.quantity_purchased
+FROM Item i, Customer c, Cust_Item ci
+WHERE i.itemno=ci.itemno AND c.cno=ci.cno;
+
+⚙️ PL/SQL PROCEDURE
+CREATE OR REPLACE PROCEDURE bill_format IS
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Today Date: '||SYSDATE);
+  DBMS_OUTPUT.PUT_LINE('Shop Name: Reliance');
+  DBMS_OUTPUT.PUT_LINE('Item  Qty  Price');
+  FOR i IN (SELECT i.itemname, ci.quantity_purchased, i.price
+            FROM Item i, Cust_Item ci
+            WHERE i.itemno=ci.itemno) LOOP
+      DBMS_OUTPUT.PUT_LINE(i.itemname||' '||i.quantity_purchased||' '||i.price);
+  END LOOP;
+END;
+/
+
+🚫 TRIGGER – No Insert/Update/Delete on Sunday
+CREATE OR REPLACE TRIGGER no_sunday
+BEFORE INSERT OR UPDATE OR DELETE ON Item
+BEGIN
+   IF TO_CHAR(SYSDATE,'DY')='SUN' THEN
+      RAISE_APPLICATION_ERROR(-20001,'Operation not allowed on Sunday');
+   END IF;
+END;
+/
